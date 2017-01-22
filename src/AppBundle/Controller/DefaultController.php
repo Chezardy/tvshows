@@ -24,13 +24,22 @@ class DefaultController extends Controller
      * @Template()
      * @Method({"GET"})
      */
-    public function showsAction()
+    public function showsAction(Request $request)
     {
         $em = $this->get('doctrine')->getManager();
         $repo = $em->getRepository('AppBundle:TVShow');
 
+        $paginator  = $this->get('knp_paginator');
+        $showsQueryBuilder =$repo->findAllAsQueryBuilder();
+
+        $pageOfShows = $paginator->paginate(
+            $showsQueryBuilder,
+            $request->query->getInt('page', 1),
+            6
+        );
+
         return [
-            'shows' => $repo->findAll()
+            'shows' => $pageOfShows,
         ];
     }
 
@@ -50,16 +59,25 @@ class DefaultController extends Controller
 
     /**
      * @Route("/search", name="search")
-     * @Template("AppBundle::Default/shows.html.twig")
+     * @Template()
      * @Method("GET")
      */
-    public function searchShowAction(Request $request)
+    public function showsSearchAction(Request $request)
     {
         $em = $this->get('doctrine')->getManager();
         $repo = $em->getRepository('AppBundle:TVShow');
-        /*return [
-            'shows' => $repo->searchShowsLike($request->get('search'))
-        ];*/
+        $paginator  = $this->get('knp_paginator');
+        $showsQueryBuilder = $repo->listAsQueryBuilderWhereNameIsLike($request->get('search'));
+
+        $pageOfShows = $paginator->paginate(
+            $showsQueryBuilder,
+            $request->query->getInt('page', 1),
+            6
+        );
+
+        return [
+            'shows' => $pageOfShows,
+        ];
     }
 
     /**
@@ -68,7 +86,12 @@ class DefaultController extends Controller
      */
     public function calendarAction()
     {
-        return [];
+        $em = $this->get('doctrine')->getManager();
+        $repo = $em->getRepository('AppBundle:Episode');
+        // dump($repo->nextDiffusions());
+        return [
+            'episodes' => $repo->nextDiffusions()
+        ];
     }
 
     /**

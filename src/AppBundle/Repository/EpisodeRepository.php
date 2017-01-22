@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class EpisodeRepository extends \Doctrine\ORM\EntityRepository
 {
+	
+	public function nextDiffusions(){
+        return $this->createQueryBuilder('episode')
+            ->where('episode.date > :today')
+            ->setParameter('today', date("Y-m-d", time()))
+            ->orderBy('episode.date')
+            ->getQuery()->getResult();
+    }
 }

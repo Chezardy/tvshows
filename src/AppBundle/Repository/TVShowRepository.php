@@ -12,11 +12,15 @@ use AppBundle\Entity\TVShow;
 class TVShowRepository extends \Doctrine\ORM\EntityRepository
 {
 
+	public function findAllAsQueryBuilder() {
+		return $this->createQueryBuilder("show");
+	}
+
     /**
      * @param $search
      * @return \Doctrine\ORM\QueryBuilder
      */
-	public function searchShowsLike($search) {
+	public function listAsQueryBuilderWhereNameIsLike($search) {
 		return $this->createQueryBuilder('show')
 			->where("show.name LIKE :name")
 			->setParameter('name', "%" . $search . "%");
