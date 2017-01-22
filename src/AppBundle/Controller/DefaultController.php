@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,6 +22,7 @@ class DefaultController extends Controller
     /**
      * @Route("/shows", name="shows")
      * @Template()
+     * @Method({"GET"})
      */
     public function showsAction()
     {
@@ -44,6 +46,20 @@ class DefaultController extends Controller
         return [
             'show' => $repo->find($id)
         ];        
+    }
+
+    /**
+     * @Route("/search", name="search")
+     * @Template("AppBundle::Default/shows.html.twig")
+     * @Method("GET")
+     */
+    public function searchShowAction(Request $request)
+    {
+        $em = $this->get('doctrine')->getManager();
+        $repo = $em->getRepository('AppBundle:TVShow');
+        /*return [
+            'shows' => $repo->searchShowsLike($request->get('search'))
+        ];*/
     }
 
     /**

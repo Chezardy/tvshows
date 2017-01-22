@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\TVShow;
 
 /**
  * TVShowRepository
@@ -10,4 +11,14 @@ namespace AppBundle\Repository;
  */
 class TVShowRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @param $search
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+	public function searchShowsLike($search) {
+		return $this->createQueryBuilder('show')
+			->where("show.name LIKE :name")
+			->setParameter('name', "%" . $search . "%");
+	}
 }
