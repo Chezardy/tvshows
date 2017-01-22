@@ -59,7 +59,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/search", name="search")
-     * @Template()
+     * @Template("AppBundle::default/shows.html.twig")
      * @Method("GET")
      */
     public function showsSearchAction(Request $request)

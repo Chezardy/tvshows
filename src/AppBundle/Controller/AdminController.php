@@ -167,4 +167,25 @@ class AdminController extends Controller
             'result' => $result
         ];
     }
+
+    /**
+     * @Route("/omdb/import/show/{id}", name="admin_omdb_import_show")
+     */
+    public function omdbImportAction($id)
+    {
+        $em = $this->get('doctrine')->getManager();
+        $repo = $em->getRepository('AppBundle:TVShow');
+
+
+        $omdb = new OMDbAPI();
+        $omdb_show_details = $omdb->fetch('i', $id)->data;
+        $filename = md5(uniqid()).'.png';
+        $full_filename = $this->get('kernel')->getRootDir() . '/../web/uploads/'. $filename;
+        copy($omdb_show_details->Poster, $full_filename);
+        $repo->addOmdbShow($omdb_show_details->Title,
+            $filename,
+            $omdb_show_details->Plot);
+
+        return $this->redirect($this->generateUrl('admin_omdb'));
+    }
 }

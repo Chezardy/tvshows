@@ -23,6 +23,16 @@ class TVShowRepository extends \Doctrine\ORM\EntityRepository
 	public function listAsQueryBuilderWhereNameIsLike($search) {
 		return $this->createQueryBuilder('show')
 			->where("show.name LIKE :name")
-			->setParameter('name', "%" . $search . "%");
+			->setParameter('name', "%".$search."%");
 	}
+
+	public function addOmdbShow($name, $image, $plot){
+
+        $show = new TVShow();
+        $show->setSynopsis($plot);
+        $show->setImage($image);
+        $show->setName($name);
+        $this->getEntityManager()->persist($show);
+        $this->getEntityManager()->flush();
+    }
 }
